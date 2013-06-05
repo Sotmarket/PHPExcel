@@ -105,18 +105,27 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		if (isset(self::$_paperSizes[$printPaperSize])) {
 			$paperSize = self::$_paperSizes[$printPaperSize];
 		}
+       // $orientation="P";
+        //print_r($this->_phpExcel->getSheet(0)->getPageSetup());
+       // print_r($this->_phpExcel->getSheet(0)->getPageMargins());
+       // print_r($orientation);
 
 		// Create PDF
-        $inchFactor = 2.54;
+        //excel storage data in inches
+        $inchFactor = 2.54*10;
 
 		$pdf = new mpdf(
             '', //mode
             'A4', // page standart
             0, // font size - inherit from excel
-            '',// default font - inherit from excel
-           $printMargins->getLeft()*$inchFactor,
+            '',// default font - inherit from excel,
+
+           $printMargins->getLeft()*$inchFactor, // milimetres
            $printMargins->getRight()*$inchFactor,
-           $printMargins->getTop()*$inchFactor
+           $printMargins->getTop()*$inchFactor,
+           $printMargins->getBottom()*$inchFactor,
+           $printMargins->getHeader()*$inchFactor,
+           $printMargins->getFooter()*$inchFactor
         );
 		$pdf->_setPageSize(strtoupper($paperSize), $orientation);
         $pdf->DefOrientation = $orientation;
