@@ -1001,6 +1001,10 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 						$explodes = explode('!', $range);
 
 						if (count($explodes) == 2) {
+
+                            $docSheet = $this->_phpExcel->getSheetByName($explodes[0]);
+                           // print($explodes[0]);
+                            //var_dump($docSheet); die();
 							if ($docSheet = $this->_phpExcel->getSheetByName($explodes[0])) {
 
 								$extractedRange = $explodes[1];
@@ -1010,7 +1014,9 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 								if (count($coordinateStrings) == 2) {
 									list($firstColumn, $firstRow) = PHPExcel_Cell::coordinateFromString($coordinateStrings[0]);
 									list($lastColumn, $lastRow) = PHPExcel_Cell::coordinateFromString($coordinateStrings[1]);
-
+                                   // print_r($firstColumn);
+                                   // print_r($lastColumn);
+                                   // die();
 									if ($firstColumn == 'A' and $lastColumn == 'IV') {
 										// then we have repeating rows
 										$docSheet->getPageSetup()->setRowsToRepeatAtTop(array($firstRow, $lastRow));

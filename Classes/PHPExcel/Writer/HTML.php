@@ -395,15 +395,18 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 			// calculate start of <tbody>, <thead>
 			$tbodyStart = $rowMin;
 			$theadStart = $theadEnd   = 0; // default: no <thead>	no </thead>
+            //$tbodyStart = $rowMin;
+            //$tbodyEnd   = $rowMax;
+            //$theadStart = $theadEnd   = 0; // default: no <thead>	no </thead>
 			if ($sheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
 				$rowsToRepeatAtTop = $sheet->getPageSetup()->getRowsToRepeatAtTop();
 
 				// we can only support repeating rows that start at top row
-				if ($rowsToRepeatAtTop[0] == 1) {
-					$theadStart = $rowsToRepeatAtTop[0];
-					$theadEnd   = $rowsToRepeatAtTop[1];
-					$tbodyStart = $rowsToRepeatAtTop[1] + 1;
-				}
+				//if ($rowsToRepeatAtTop[0] == 1) {
+                $theadStart = $rowsToRepeatAtTop[0];
+                $theadEnd   = $rowsToRepeatAtTop[1];
+                $tbodyStart = $rowsToRepeatAtTop[1] + 1;
+				//}
 			}
 
 			// Loop through cells
@@ -966,7 +969,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 //		$css = $this->_mapBorderStyle($pStyle->getBorderStyle()) . ' #' . $pStyle->getColor()->getRGB();
 		//	Create CSS - add !important to non-none border styles for merged cells  
 		$borderStyle = $this->_mapBorderStyle($pStyle->getBorderStyle());  
-		$css = $borderStyle . ' #' . $pStyle->getColor()->getRGB() . (($borderStyle == 'none') ? '' : ' !important'); 
+		$css = $borderStyle . ' #' . $pStyle->getColor()->getRGB() . (($borderStyle == 'none') ? '' : ' !important');
 
 		// Return
 		return $css;
@@ -1225,15 +1228,22 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 				// Colspan and Rowspan
 				$colspan = 1;
 				$rowspan = 1;
+                //print_r($pSheet->getParent()->getIndex($pSheet));
+                //print_r($this->_isBaseCell[0]); die();
+
 				if (isset($this->_isBaseCell[$pSheet->getParent()->getIndex($pSheet)][$pRow + 1][$colNum])) {
+
 					$spans = $this->_isBaseCell[$pSheet->getParent()->getIndex($pSheet)][$pRow + 1][$colNum];
 					$rowSpan = $spans['rowspan'];
 					$colSpan = $spans['colspan'];
-
 					//	Also apply style from last cell in merge to fix borders -
 					//		relies on !important for non-none border declarations in _createCSSStyleBorder
 					$endCellCoord = PHPExcel_Cell::stringFromColumnIndex($colNum + $colSpan - 1) . ($pRow + $rowSpan);
-					$cssClass .= ' style' . $pSheet->getCell($endCellCoord)->getXfIndex();
+                    $st = $pSheet->getCell($endCellCoord)->getXfIndex();
+                    $cssClass["class"] = ' style' . $pSheet->getCell($endCellCoord)->getXfIndex();
+                   // print_r($cssClass);
+					//$cssClass .= ' style' . $pSheet->getCell($endCellCoord)->getXfIndex();
+
 				}
 
 				// Write
@@ -1254,16 +1264,25 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 									$width += $this->_columnWidths[$sheetIndex][$i];
 								}
 							}
-							$cssClass['width'] = $width . 'pt';
+                            if (is_array($cssClass)){
+                                $cssClass['width'] = $width . 'pt';
+                            }
+
 
 							// We must also explicitly write the height of the <td> element because TCPDF
 							// does not recognize e.g. <tr style="height:50pt">
 							if (isset($this->_cssStyles['table.sheet' . $sheetIndex . ' tr.row' . $pRow]['height'])) {
 								$height = $this->_cssStyles['table.sheet' . $sheetIndex . ' tr.row' . $pRow]['height'];
-								$cssClass['height'] = $height;
+                                if (is_array($cssClass)){
+                                    $cssClass['height'] = $height;
+                                }
+
 							}
 							//** end of redundant code **
-
+                            if (isset($cssClass["class"])){
+                                $html .= ' class="' . trim($cssClass["class"]) . '"';
+                                unset($cssClass["class"]);
+                            }
 							$html .= ' style="' . $this->_assembleCSS($cssClass) . '"';
 						}
 						if ($colSpan > 1) {
@@ -1312,9 +1331,12 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 	private function _assembleCSS($pValue = array())
 	{
 		$pairs = array();
-		foreach ($pValue as $property => $value) {
-			$pairs[] = $property . ':' . $value;
-		}
+        if (is_array($pValue)){
+            foreach ($pValue as $property => $value) {
+                $pairs[] = $property . ':' . $value;
+            }
+        }
+
 		$string = implode('; ', $pairs);
 
 		return $string;
