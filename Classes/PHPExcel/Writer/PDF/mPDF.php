@@ -136,7 +136,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		$pdf->SetKeywords($this->_phpExcel->getProperties()->getKeywords());
 		$pdf->SetCreator($this->_phpExcel->getProperties()->getCreator());
 
-        $html = $this->generateHTMLHeader(true) .
+        $html = $this->generateHTMLHeader(TRUE) .
             $this->generateSheetData() .
             $this->generateHTMLFooter();
 
