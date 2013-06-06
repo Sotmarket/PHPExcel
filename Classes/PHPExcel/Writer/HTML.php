@@ -688,7 +688,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 
 		// Start styles
 		if ($generateSurroundingHTML) {
-			$html .= '	<style type="text/css">' . PHP_EOL;
+			$html .= '	<style type="text/css" >' . PHP_EOL;
 			$html .= '	  html { ' . $this->_assembleCSS($css['html']) . ' }' . PHP_EOL;
 		}
 
