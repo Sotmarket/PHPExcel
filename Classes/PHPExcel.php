@@ -357,12 +357,11 @@ class PHPExcel
     public function getSheetByName($pName = '')
     {
         $worksheetCount = count($this->_workSheetCollection);
-        //@todo autodetecte encoding
-        $pName = mb_convert_encoding ($pName, "CP1251","UTF-8");
+
         $pName = trim ($pName,"'");
 
         for ($i = 0; $i < $worksheetCount; ++$i) {
-            $title  =mb_convert_encoding ($this->_workSheetCollection[$i]->getTitle(), "CP1251","UTF-8");
+            $title = $this->_workSheetCollection[$i]->getTitle();
             if ($title === $pName) {
                 return $this->_workSheetCollection[$i];
             }

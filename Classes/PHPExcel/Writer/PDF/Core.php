@@ -76,7 +76,7 @@ abstract class PHPExcel_Writer_PDF_Core extends PHPExcel_Writer_HTML
      *
      * @var array
      */
-    protected static $_paperSizes = array(
+    public static $_paperSizes = array(
         PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER
             => 'LETTER',                 //    (8.5 in. by 11 in.)
         PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER_SMALL
