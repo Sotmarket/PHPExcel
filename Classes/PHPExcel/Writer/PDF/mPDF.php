@@ -144,7 +144,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
         $pdf->WriteHTML(
             $html
 		);
-        file_put_contents("__debug.html", $html);
+        
 		// Write to file
 		fwrite($fileHandle, $pdf->Output('','S'));
 
