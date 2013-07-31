@@ -47,6 +47,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 	 *
 	 * @param 	PHPExcel	$phpExcel	PHPExcel object
 	 */
+    const INCH_FACTOR = 25.4;
 	public function __construct(PHPExcel $phpExcel) {
 		parent::__construct($phpExcel);
 	}
@@ -80,14 +81,18 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 
 		// Check for paper size and page orientation
 		if (is_null($this->getSheetIndex())) {
-			$orientation = ($this->_phpExcel->getSheet(0)->getPageSetup()->getOrientation() == PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE) ? 'L' : 'P';
-			$printPaperSize = $this->_phpExcel->getSheet(0)->getPageSetup()->getPaperSize();
-			$printMargins = $this->_phpExcel->getSheet(0)->getPageMargins();
+            $sheetIndex = 0;
+
 		} else {
-			$orientation = ($this->_phpExcel->getSheet($this->getSheetIndex())->getPageSetup()->getOrientation() == PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE) ? 'L' : 'P';
-			$printPaperSize = $this->_phpExcel->getSheet($this->getSheetIndex())->getPageSetup()->getPaperSize();
-			$printMargins = $this->_phpExcel->getSheet($this->getSheetIndex())->getPageMargins();
+            $sheetIndex = $this->getSheetIndex();
+
 		}
+        $sheet = $this->_phpExcel->getSheet($sheetIndex);
+        $orientation = ($sheet->getPageSetup()->getOrientation() == PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE) ? 'L' : 'P';
+        $printPaperSize = $sheet->getPageSetup()->getPaperSize();
+        $printMargins = $sheet->getPageMargins();
+        $font = $sheet->getDefaultStyle()->getFont();
+
 		$this->setOrientation($orientation);
 
 		//	Override Page Orientation
@@ -105,20 +110,16 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		if (isset(self::$_paperSizes[$printPaperSize])) {
 			$paperSize = self::$_paperSizes[$printPaperSize];
 		}
-       // $orientation="P";
-        //print_r($this->_phpExcel->getSheet(0)->getPageSetup());
-       // print_r($this->_phpExcel->getSheet(0)->getPageMargins());
-       // print_r($orientation);
 
 		// Create PDF
         //excel storage data in inches
-        $inchFactor = 2.54*10;
+        $inchFactor = self::INCH_FACTOR;
 
 		$pdf = new mpdf(
             '', //mode
             'A4', // page standart
-            0, // font size - inherit from excel
-            '',// default font - inherit from excel,
+           $font->getSize(), // font size - inherit from excel
+           $font->getName(),// default font - inherit from excel,
 
            $printMargins->getLeft()*$inchFactor, // milimetres
            $printMargins->getRight()*$inchFactor,
@@ -140,11 +141,10 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
             $this->generateSheetData() .
             $this->generateHTMLFooter();
 
-        file_put_contents("__debug.html", $html);
         $pdf->WriteHTML(
             $html
 		);
-
+        file_put_contents("__debug.html", $html);
 		// Write to file
 		fwrite($fileHandle, $pdf->Output('','S'));
 

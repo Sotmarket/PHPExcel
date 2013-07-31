@@ -403,9 +403,15 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 
 				// we can only support repeating rows that start at top row
 				//if ($rowsToRepeatAtTop[0] == 1) {
-                $theadStart = $rowsToRepeatAtTop[0];
-                $theadEnd   = $rowsToRepeatAtTop[1];
-                $tbodyStart = $rowsToRepeatAtTop[1] + 1;
+
+                // we can only support repeating rows that start at top row
+                if ((!$this->_isPdf && $rowsToRepeatAtTop[0] == 1) || $this->_isPdf) {
+                    $theadStart = $rowsToRepeatAtTop[0];
+                    $theadEnd   = $rowsToRepeatAtTop[1];
+                    $tbodyStart = $rowsToRepeatAtTop[1] + 1;
+                }
+
+
 				//}
 			}
 
