@@ -33,7 +33,7 @@
  *  @package     PHPExcel_Writer_PDF
  *  @copyright   Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-abstract class PHPExcel_Writer_PDF_Core extends PHPExcel_Writer_HTML
+abstract class PHPExcel_Writer_PDF_Core extends PHPExcel_Writer_PDFHtml
 {
     /**
      * Temporary storage directory
