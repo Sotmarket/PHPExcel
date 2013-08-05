@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * Интерфейс к Пейджеру
  * @category  
  * @package   
  * @subpackage 
