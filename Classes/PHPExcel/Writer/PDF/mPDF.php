@@ -140,7 +140,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
         $html = $this->generateHTMLHeader(TRUE) .
             $this->generateSheetData() .
             $this->generateHTMLFooter();
-        file_put_contents("__debug.html", $html);
+        //file_put_contents("__debug.html", $html);
         $pdf->WriteHTML(
             $html
 		);
