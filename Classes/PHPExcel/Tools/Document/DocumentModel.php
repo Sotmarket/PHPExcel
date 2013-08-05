@@ -9,7 +9,7 @@
  * @version    $Id: $
  */
 
-class DocumentModel
+class PHPExcel_Tools_Document_DocumentModel
 {
     /**
      * Left
@@ -156,7 +156,7 @@ class DocumentModel
     }
     /**
      * @param $format
-     * @return DocumentModel
+     * @return PHPExcel_Tools_Document_DocumentModel
      */
     protected function setFormat($format)
     {
@@ -166,7 +166,7 @@ class DocumentModel
 
     /**
      * @param $orientation
-     * @return DocumentModel
+     * @return PHPExcel_Tools_Document_DocumentModel
      */
     protected function setOrientation($orientation)
     {
@@ -264,7 +264,7 @@ class DocumentModel
      * Set Left
      *
      * @param double $pValue
-     * @return DocumentModel
+     * @return PHPExcel_Tools_Document_DocumentModel
      */
     public function setLeft($pValue) {
         $this->left = $pValue;
@@ -284,7 +284,7 @@ class DocumentModel
      * Set Right
      *
      * @param double $pValue
-     * @return DocumentModel
+     * @return PHPExcel_Tools_Document_DocumentModel
      */
     public function setRight($pValue) {
         $this->right = $pValue;
@@ -324,7 +324,7 @@ class DocumentModel
      * Set Bottom
      *
      * @param double $pValue
-     * @return DocumentModel
+     * @return PHPExcel_Tools_Document_DocumentModel
      */
     public function setBottom($pValue) {
         $this->bottom = $pValue;
@@ -364,7 +364,7 @@ class DocumentModel
      * Set Footer
      *
      * @param double $pValue
-     * @return DocumentModel
+     * @return PHPExcel_Tools_Document_DocumentModel
      */
     public function setFooter($pValue) {
         $this->footer = $pValue;

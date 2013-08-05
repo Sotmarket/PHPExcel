@@ -8,7 +8,7 @@
  * @date: 02.08.13
  * @version    $Id: $
  */
-class PageModel{
+class PHPExcel_Tools_Document_PageModel{
     public $start;
     public $finish;
 

@@ -1,4 +1,5 @@
 <?php
+require_once ("IExcelPager.php");
 /**
  *
  * @category
@@ -8,7 +9,7 @@
  * @date: 26.07.13
  * @version    $Id: $
  */
-class Pager implements IExcelPager{
+class PHPExcel_Tools_Pager_Pager implements IExcelPager{
     protected $excelSheet;
 
     /**
@@ -73,7 +74,7 @@ class Pager implements IExcelPager{
     public function getPageHeight()
     {
         if (null == $this->pageHeight){
-            $pageModel = DocumentModel::getByExcelSheet($this->getExcelSheet());
+            $pageModel = PHPExcel_Tools_Document_DocumentModel::getByExcelSheet($this->getExcelSheet());
             $this->pageHeight = $pageModel->getHeight();
         }
         return $this->pageHeight;
@@ -148,7 +149,7 @@ class Pager implements IExcelPager{
         $lastDataRow = $this->getLastDataRow();
         $footer_top = ($printMargins->getTop()+$printMargins->getBottom())*self::INCH_FACTOR;
         if (1 == $countPages){
-            $result = array(1=>new PageModel(1, $rowBounds[1]));
+            $result = array(1=>new PHPExcel_Tools_Document_PageModel(1, $rowBounds[1]));
         }else {
             $result = array();
             $transfer = self::PRECISION_ROW;
@@ -162,7 +163,7 @@ class Pager implements IExcelPager{
                 }
 
                 if ($page < $countPages){
-                    $pageModel = new PageModel($startRow, $finishRow-$transfer);
+                    $pageModel = new PHPExcel_Tools_Document_PageModel($startRow, $finishRow-$transfer);
                     if (
                         $lastDataRow>$pageModel->getStart() &&
                         ($lastDataRow<=$pageModel->getFinish() || $lastDataRow==($pageModel->getFinish()+1))
@@ -187,7 +188,7 @@ class Pager implements IExcelPager{
                 }
                 else {
                     // Последняя страница
-                    $pageModel = new PageModel($startRow, $finishRow-$transfer);
+                    $pageModel = new PHPExcel_Tools_Document_PageModel($startRow, $finishRow-$transfer);
                     if (
                         $lastDataRow>$pageModel->getStart() &&
                         ($lastDataRow<=$pageModel->getFinish() || $lastDataRow==($pageModel->getFinish()+1)) &&
@@ -205,7 +206,7 @@ class Pager implements IExcelPager{
                         if ($needHeight>$haveHeight){
                             //$transfer = $pageModel->finish -($lastDataRow-1);
                             $pageModel->finish = $lastDataRow-1-self::PRECISION_ROW;
-                            $lastPage = new PageModel($lastDataRow-self::PRECISION_ROW, $finishRow);
+                            $lastPage = new PHPExcel_Tools_Document_PageModel($lastDataRow-self::PRECISION_ROW, $finishRow);
                             $result[$page+1]=$lastPage;
                         }
 

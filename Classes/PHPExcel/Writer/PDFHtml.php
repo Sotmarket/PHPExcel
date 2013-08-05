@@ -133,7 +133,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
         return $this->isUseCellWidth;
     }
 
-    public function setPager(Pager $pager=null)
+    public function setPager(IExcelPager $pager=null)
     {
         $this->pager = $pager;
         return $this;

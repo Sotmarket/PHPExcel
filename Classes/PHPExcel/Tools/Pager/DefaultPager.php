@@ -9,7 +9,7 @@
  * @version    $Id: $
  */
 
-class DefaultPager implements  IExcelPager{
+class PHPExcel_Tools_Pager_DefaultPager implements  IExcelPager{
     protected $excelSheet;
 
     /**
