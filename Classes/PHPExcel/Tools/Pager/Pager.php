@@ -132,7 +132,13 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
         }
         return $this->rowBounds;
     }
-
+    private function getPrecisionByPage($page){
+        $result = 1;
+        if (1 < $page){
+            $result = self::PRECISION_ROW;
+        }
+        return $result;
+    }
     /**
      * Получить список страниц
      * @return array
@@ -152,9 +158,10 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
             $result = array(1=>new PHPExcel_Tools_Document_PageModel(1, $rowBounds[1]));
         }else {
             $result = array();
-            $transfer = self::PRECISION_ROW;
+
             $cutDown = false;
             foreach ($rowBounds as $page=>$finishRow){
+                $transfer = $this->getPrecisionByPage($page);
                 if (1 == $page){
                     $startRow = 1;
                 }
@@ -178,7 +185,7 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
 
                         if ($needHeight>$haveHeight){
 
-                            $pageModel->finish = $lastDataRow-1-self::PRECISION_ROW;
+                            $pageModel->finish = $lastDataRow-1-$transfer;
                             $cutDown = true;
 
                         }
@@ -205,8 +212,10 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
 
                         if ($needHeight>$haveHeight){
                             //$transfer = $pageModel->finish -($lastDataRow-1);
-                            $pageModel->finish = $lastDataRow-1-self::PRECISION_ROW;
-                            $lastPage = new PHPExcel_Tools_Document_PageModel($lastDataRow-self::PRECISION_ROW, $finishRow);
+                            $pageModel->finish = $lastDataRow-1-$transfer;
+                            $lastPage = new PHPExcel_Tools_Document_PageModel(
+                                $lastDataRow-$transfer, $finishRow
+                            );
                             $result[$page+1]=$lastPage;
                         }
 

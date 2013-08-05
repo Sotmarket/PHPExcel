@@ -339,7 +339,8 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
                 $style = 'style="overflow: wrap; "';
             }
             else {
-                $style = 'style="width:'.$this->getDocumentWidth($sheetIndex).'pt "';
+               // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)*1.2).'pt "';
+                $style = 'style="width:100% "';
             }
             $html .= '	<table border="0" cellpadding="0" '.$style.'  cellspacing="0"  class="sheet' . $sheetIndex . $gridlines . '">' . PHP_EOL;
         } else {
