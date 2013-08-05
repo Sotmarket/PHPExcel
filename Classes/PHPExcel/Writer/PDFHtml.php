@@ -145,7 +145,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     protected function getPager()
     {
         if (null == $this->pager){
-            $this->pager = new DefaultPager($this->_phpExcel->getActiveSheet());
+            $this->pager = new PHPExcel_Tools_Pager_DefaultPager($this->_phpExcel->getActiveSheet());
         }
         return $this->pager;
     }
