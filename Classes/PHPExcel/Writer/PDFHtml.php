@@ -4,83 +4,10 @@
  * Формирует html для PDF
  * @category   PHPExcel
  * @package	PHPExcel_Writer_HTML
- * @copyright  Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  sabsab
+ * @author sabsab
  */
 class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
-
-
-	/**
-	 * Sheet index to write
-	 *
-	 * @var int
-	 */
-	private $_sheetIndex	= 0;
-
-	/**
-	 * Images root
-	 *
-	 * @var string
-	 */
-	private $_imagesRoot	= '.';
-
-	/**
-	 * embed images, or link to images
-	 *
-	 * @var boolean
-	 */
-	private $_embedImages	= false;
-
-	/**
-	 * Use inline CSS?
-	 *
-	 * @var boolean
-	 */
-	private $_useInlineCss = false;
-
-	/**
-	 * Array of CSS styles
-	 *
-	 * @var array
-	 */
-	private $_cssStyles = null;
-
-	/**
-	 * Array of column widths in points
-	 *
-	 * @var array
-	 */
-	private $_columnWidths = null;
-
-
-
-	/**
-	 * Flag whether spans have been calculated
-	 *
-	 * @var boolean
-	 */
-	private $_spansAreCalculated	= false;
-
-	/**
-	 * Excel cells that should not be written as HTML cells
-	 *
-	 * @var array
-	 */
-	private $_isSpannedCell	= array();
-
-	/**
-	 * Excel cells that are upper-left corner in a cell merge
-	 *
-	 * @var array
-	 */
-	private $_isBaseCell	= array();
-
-	/**
-	 * Excel rows that should not be written as HTML rows
-	 *
-	 * @var array
-	 */
-	private $_isSpannedRow	= array();
-
 	/**
 	 * Is the current writer creating PDF?
 	 *
@@ -88,12 +15,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
 	 */
 	protected $_isPdf = true;
 
-	/**
-	 * Generate the Navigation block
-	 *
-	 * @var boolean
-	 */
-	private $_generateSheetNavigationBlock = true;
+
     /**
      * @var Pager
      */
@@ -128,11 +50,18 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     protected function getIsUseCellWidth()
     {
         return $this->isUseCellWidth;
     }
 
+    /**
+     * @param IExcelPager $pager
+     * @return $this
+     */
     public function setPager(IExcelPager $pager=null)
     {
         $this->pager = $pager;
@@ -315,7 +244,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
      * @param $sheet
      * @return int
      */
-    private function getDocumentWidth($sheetIndex){
+    protected function getDocumentWidth($sheetIndex){
 
         return array_sum($this->_columnWidths[$sheetIndex]);
 
@@ -336,7 +265,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
         if (!$this->_useInlineCss) {
             $gridlines = $pSheet->getShowGridLines() ? ' gridlines' : '';
             if ($this->getIsUseCellWidth()){
-                $style = 'style="overflow: wrap; "';
+                $style = 'style="overflow: wrap;width:100% "';
             }
             else {
                // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)*1.2).'pt "';
@@ -372,7 +301,15 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
         // Return
         return $html;
     }
-    private function buildRowHtml($sheet, $row,  $dimension){
+
+    /**
+     * Построить html для одного ряда
+     * @param $sheet
+     * @param $row
+     * @param $dimension
+     * @return string
+     */
+    protected function buildRowHtml($sheet, $row,  $dimension){
         $html = '';
         if ( !isset($this->_isSpannedRow[$sheet->getParent()->getIndex($sheet)][$row]) ) {
             // Start a new rowData
@@ -397,7 +334,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
      * Разделитель страниц
      * @return string
      */
-    private function getPageBreakHtml(){
+    protected function getPageBreakHtml(){
         return '<div style="page-break-before:always" ></div>';
     }
 	/**
@@ -523,8 +460,5 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
 		// Return
 		return $html;
 	}
-
-
-
 	
 }
