@@ -20,7 +20,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
      * @var Pager
      */
     protected $pager ;
-    protected $isSplitTables = false;
+    protected $isSplitTables = true;
     protected $isUseCellWidth = false;
 
     /**
@@ -411,19 +411,19 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
                 $html .= $this->_generateTableHeader($sheet);
                 if ($numPage == 1){
                     for ($row = $start; $row<=$end; $row++){
+                        if ($row == $theadStart) {
 
+                            if (true == $this->getIsSplitTables()){
+                                $html.=$this->_generateTableFooter();
+                                $html.=$this->_generateTableHeader($sheet);
+                            }
+                        }
                         $rowHtml = $this->buildRowHtml($sheet, $row, $dimension);
                         $html .= $rowHtml;
                         if ($row>=$theadStart && $row<=$theadEnd){
                             $headerHtml .=$rowHtml ;
                         }
-                        if ($row == $theadEnd) {
 
-                            if (true == $this->getIsSplitTables()){
-                                $this->_generateTableFooter();
-                                $this->_generateTableHeader($sheet);
-                            }
-                        }
                     }
 
                 }
