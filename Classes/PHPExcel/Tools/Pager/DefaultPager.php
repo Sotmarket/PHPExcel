@@ -31,7 +31,7 @@ class PHPExcel_Tools_Pager_DefaultPager implements  IExcelPager{
      */
     public function getSmoothedPageMap(){
         $highestRow = $this->getExcelSheet()->getHighestRow();
-        return array (new PageModel(1, $highestRow));
+        return array (1=>new PHPExcel_Tools_Document_PageModel(1, $highestRow));
     }
 
     /**

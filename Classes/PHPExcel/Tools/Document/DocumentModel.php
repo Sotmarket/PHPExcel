@@ -131,6 +131,7 @@ class PHPExcel_Tools_Document_DocumentModel
         else {
             $result = $arrHeightWidth[0];
         }
+
         return $result;
 
     }
@@ -152,6 +153,7 @@ class PHPExcel_Tools_Document_DocumentModel
         else {
             $result = $arrHeightWidth[1];
         }
+
         return $result;
     }
     /**
