@@ -131,7 +131,13 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		$pdf->_setPageSize(strtoupper($paperSize), $orientation);
         $pdf->DefOrientation = $orientation;
 		// Document info
-		$pdf->SetTitle($this->_phpExcel->getProperties()->getTitle());
+
+        $title = $this->_phpExcel->getProperties()->getTitle();
+        if ("Untitled Spreadsheet" == trim($this->_phpExcel->getProperties()->getTitle())){
+
+            $title = $sheet->getTitle();
+        }
+		$pdf->SetTitle($title);
 		$pdf->SetAuthor($this->_phpExcel->getProperties()->getCreator());
 		$pdf->SetSubject($this->_phpExcel->getProperties()->getSubject());
 		$pdf->SetKeywords($this->_phpExcel->getProperties()->getKeywords());

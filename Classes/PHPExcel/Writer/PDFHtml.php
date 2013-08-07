@@ -22,6 +22,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     protected $pager ;
     protected $isSplitTables = true;
     protected $isUseCellWidth = false;
+    protected $tableWidth = null;
 
     /**
      * Разделять ли шапку от основной таблицы
@@ -37,6 +38,22 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     protected function getIsSplitTables()
     {
         return $this->isSplitTables;
+    }
+
+    /**
+     * Установить ширину колонок принудительно
+     * @param $tableWidth
+     * @return $this
+     */
+    public function setTableWidth($tableWidth)
+    {
+        $this->tableWidth = $tableWidth;
+        return $this;
+    }
+
+    protected function getTableWidth()
+    {
+        return $this->tableWidth;
     }
 
     /**
@@ -264,12 +281,16 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
 
         if (!$this->_useInlineCss) {
             $gridlines = $pSheet->getShowGridLines() ? ' gridlines' : '';
+            $style = "";
             if ($this->getIsUseCellWidth()){
                 $style = 'style="overflow: wrap;width:100% "';
             }
             else {
-               // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)*1.2).'pt "';
-                $style = 'style="width:100% "';
+               // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)).'pt "';
+                if (null !=$this->getTableWidth()){
+                    $style = 'style="width:'.$this->getTableWidth().'"';
+                }
+
             }
             $html .= '	<table border="0" cellpadding="0" '.$style.'  cellspacing="0"  class="sheet' . $sheetIndex . $gridlines . '">' . PHP_EOL;
         } else {
