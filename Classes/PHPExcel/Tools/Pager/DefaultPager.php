@@ -8,7 +8,7 @@
  * @date: 05.08.13
  * @version    $Id: $
  */
-
+require_once ("IExcelPager.php");
 class PHPExcel_Tools_Pager_DefaultPager implements  IExcelPager{
     protected $excelSheet;
 
