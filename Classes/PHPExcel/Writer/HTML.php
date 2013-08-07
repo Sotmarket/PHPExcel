@@ -60,7 +60,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 	 *
 	 * @var boolean
 	 */
-	protected $_embedImages	= FALSE;
+	protected $_embedImages	= false;
 
 	/**
 	 * Use inline CSS?
@@ -131,7 +131,26 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 	 * @var boolean
 	 */
 	protected $_generateSheetNavigationBlock = true;
+    /**
+     * Форсированно установить ширину таблицы
+     * @var string
+     */
+    protected $tableWidth = null;
+    /**
+     * Установить ширину колонок принудительно
+     * @param $tableWidth
+     * @return $this
+     */
+    public function setTableWidth($tableWidth)
+    {
+        $this->tableWidth = $tableWidth;
+        return $this;
+    }
 
+    protected function getTableWidth()
+    {
+        return $this->tableWidth;
+    }
 	/**
 	 * Create a new PHPExcel_Writer_HTML
 	 *
@@ -153,7 +172,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 		$this->_phpExcel->garbageCollect();
 
 		$saveDebugLog = PHPExcel_Calculation::getInstance($this->_phpExcel)->getDebugLog()->getWriteDebugLog();
-		PHPExcel_Calculation::getInstance($this->_phpExcel)->getDebugLog()->setWriteDebugLog(FALSE);
+		PHPExcel_Calculation::getInstance($this->_phpExcel)->getDebugLog()->setWriteDebugLog(false);
 		$saveArrayReturnType = PHPExcel_Calculation::getArrayReturnType();
 		PHPExcel_Calculation::setArrayReturnType(PHPExcel_Calculation::RETURN_ARRAY_AS_VALUE);
 

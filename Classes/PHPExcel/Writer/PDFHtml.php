@@ -22,7 +22,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     protected $pager ;
     protected $isSplitTables = true;
     protected $isUseCellWidth = false;
-    protected $tableWidth = null;
+
 
     /**
      * Разделять ли шапку от основной таблицы
@@ -40,21 +40,6 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
         return $this->isSplitTables;
     }
 
-    /**
-     * Установить ширину колонок принудительно
-     * @param $tableWidth
-     * @return $this
-     */
-    public function setTableWidth($tableWidth)
-    {
-        $this->tableWidth = $tableWidth;
-        return $this;
-    }
-
-    protected function getTableWidth()
-    {
-        return $this->tableWidth;
-    }
 
     /**
      * Использовать td.width
