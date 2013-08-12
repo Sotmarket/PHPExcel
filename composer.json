@@ -1,5 +1,5 @@
 {
-    "name": "Sotmarket/phpexcel",
+    "name": "sabsab/phpexcel",
     "description": "Improving PDF support for original PHPExcel",
     "keywords": ["PHP","Excel","PDF","xlsx","xls","spreadsheet","Excel2PDF"],
     "homepage": "http://phpexcel.codeplex.com",
@@ -19,6 +19,9 @@
         },
         {
             "name": "Erik Tilt"
+        },
+        {
+            "name": "George Lebedev"
         }
     ],
     "require": {
