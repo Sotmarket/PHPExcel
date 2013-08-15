@@ -174,6 +174,62 @@ class PHPExcel_Writer_PageableHtml extends PHPExcel_Writer_PDFHtml implements PH
         // Return
         return $css;
     }
+    /**
+     * Generate table header
+     *
+     * @param	PHPExcel_Worksheet	$pSheet		The worksheet for the table we are writing
+     * @return	string
+     * @throws	PHPExcel_Writer_Exception
+     */
+    protected function _generateTableHeader($pSheet) {
+        $sheetIndex = $pSheet->getParent()->getIndex($pSheet);
 
+        // Construct HTML
+        $html = '';
+        $html .= $this->_setMargins($pSheet);
+
+        if (!$this->_useInlineCss) {
+            $gridlines = $pSheet->getShowGridLines() ? ' gridlines' : '';
+            $style = "";
+            if ($this->getIsUseCellWidth()){
+                $style = 'style="overflow: wrap;width:100% "';
+            }
+            else {
+                // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)).'pt "';
+                if (null !=$this->getTableWidth()){
+                    $style = 'style="width:'.$this->getTableWidth().'"';
+                }
+
+            }
+            $html .= '	<table border="0" cellpadding="0" '.$style.'  cellspacing="0"  class="sheet' . $sheetIndex . $gridlines . '">' . PHP_EOL;
+        } else {
+            $style = isset($this->_cssStyles['table']) ?
+                $this->_assembleCSS($this->_cssStyles['table']) : '';
+
+            if ($this->_isPdf && $pSheet->getShowGridLines()) {
+                $html .= '	<table border="1" cellpadding="1" id="sheet' . $sheetIndex . '" cellspacing="1" style="' . $style . '">' . PHP_EOL;
+            } else {
+                $html .= '	<table border="0" cellpadding="1" id="sheet' . $sheetIndex . '" cellspacing="0" style="' . $style . '">' . PHP_EOL;
+            }
+        }
+
+        // Write <col> elements
+        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($pSheet->getHighestColumn()) - 1;
+        $i = -1;
+        while($i++ < $highestColumnIndex) {
+            if (!$this->_isPdf) {
+                if (!$this->_useInlineCss) {
+                    $html .= '		<col class="col' . $i . '">' . PHP_EOL;
+                } else {
+                    $style = isset($this->_cssStyles['table.sheet' . $sheetIndex . ' col.col' . $i]) ?
+                        $this->_assembleCSS($this->_cssStyles['table.sheet' . $sheetIndex . ' col.col' . $i]) : '';
+                    $html .= '		<col style="' . $style . '">' . PHP_EOL;
+                }
+            }
+        }
+
+        // Return
+        return $html;
+    }
 
 }

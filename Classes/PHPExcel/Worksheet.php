@@ -1641,6 +1641,14 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
     {
         return $this->setBreak(PHPExcel_Cell::stringFromColumnIndex($pColumn) . $pRow, $pBreak);
     }
+    /**
+     * @param $breaks
+     * @return $this
+     */
+    public function setBreaks($breaks){
+        $this->_breaks = $breaks;
+        return $this;
+    }
 
     /**
      * Get breaks

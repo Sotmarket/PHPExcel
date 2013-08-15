@@ -14,6 +14,7 @@ class PHPExcel_Tools_Pager_XlsPager extends PHPExcel_Tools_Pager_Pager implement
     public function getSmoothedPageMap(){
         $result = parent::getSmoothedPageMap();
         $sheet = $this->getExcelSheet();
+        $sheet->setBreaks(array());
         foreach ($result as $page){
             $sheet->setBreak('A'.$page->getFinish(),PHPExcel_Worksheet::BREAK_ROW);
         }

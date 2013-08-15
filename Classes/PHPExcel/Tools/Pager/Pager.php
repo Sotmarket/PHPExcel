@@ -26,6 +26,7 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
     const INCH_FACTOR = 25.4; // inches to mm
     // колчиество колонок - которые мы отрезаем снизу у документа
     const PRECISION_ROW=4;
+    protected $smoothedPageMap = array();
 
     /**
      *
@@ -139,104 +140,118 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
         }
         return $result;
     }
+
+    /**
+     * ”становить карту страничек
+     * @param $pageMap
+     * @return $this
+     */
+    public function setSmoothedPageMap($pageMap){
+        $this->smoothedPageMap = $pageMap;
+        return $this;
+    }
     /**
      * ѕолучить список страниц
      * @return array
      */
     public function getSmoothedPageMap(){
-        $rowBounds = $this->getRowBounds();
-        if (null  == $this->getLastDataRow()){
-            $result = array(1=>new PageModel(1, $rowBounds[1]));
-            return $result;
-        }
+        if (null == $this->smoothedPageMap){
+            $rowBounds = $this->getRowBounds();
+            if (null  == $this->getLastDataRow()){
+                $result = array(1=>new PageModel(1, $rowBounds[1]));
+                return $result;
+            }
 
-        $countPages = $this->getCountPages();
-        $printMargins = $this->getExcelSheet()->getPageMargins();
-        $lastDataRow = $this->getLastDataRow();
-        $footer_top = ($printMargins->getTop()+$printMargins->getBottom())*self::INCH_FACTOR;
-        if (1 == $countPages){
-            $result = array(1=>new PHPExcel_Tools_Document_PageModel(1, $rowBounds[1]));
-        }else {
-            $result = array();
+            $countPages = $this->getCountPages();
+            $printMargins = $this->getExcelSheet()->getPageMargins();
+            $lastDataRow = $this->getLastDataRow();
+            $footer_top = ($printMargins->getTop()+$printMargins->getBottom())*self::INCH_FACTOR;
+            if (1 == $countPages){
+                $result = array(1=>new PHPExcel_Tools_Document_PageModel(1, $rowBounds[1]));
+            }else {
+                $result = array();
 
-            $cutDown = false;
-            foreach ($rowBounds as $page=>$finishRow){
-                $transfer = $this->getPrecisionByPage($page);
-                if (1 == $page){
-                    $startRow = 1;
-                }
-                else {
-                    $startRow = $result[$page-1]->getFinish()+1;
-                }
+                $cutDown = false;
+                foreach ($rowBounds as $page=>$finishRow){
+                    $transfer = $this->getPrecisionByPage($page);
+                    if (1 == $page){
+                        $startRow = 1;
+                    }
+                    else {
+                        $startRow = $result[$page-1]->getFinish()+1;
+                    }
 
-                if ($page < $countPages){
-                    $pageModel = new PHPExcel_Tools_Document_PageModel($startRow, $finishRow-$transfer);
-                    if (
-                        $lastDataRow>$pageModel->getStart() &&
-                        ($lastDataRow<=$pageModel->getFinish() || $lastDataRow==($pageModel->getFinish()+1))
-                    ){
-                        $headerHeight = ($page>1)?$this->getHeaderRowHeight():0;
-                        $haveHeight = $this->getPageHeight()
-                            - $this->getHeightOfRowRange($pageModel->getStart(), $lastDataRow)
-                            - $footer_top
-                            - $headerHeight
-                        ;
-                        $needHeight = $this->getHeightOfRowRange($lastDataRow);
+                    if ($page < $countPages){
+                        $pageModel = new PHPExcel_Tools_Document_PageModel($startRow, $finishRow-$transfer);
+                        if (
+                            $lastDataRow>$pageModel->getStart() &&
+                            ($lastDataRow<=$pageModel->getFinish() || $lastDataRow==($pageModel->getFinish()+1))
+                        ){
+                            $headerHeight = ($page>1)?$this->getHeaderRowHeight():0;
+                            $haveHeight = $this->getPageHeight()
+                                - $this->getHeightOfRowRange($pageModel->getStart(), $lastDataRow)
+                                - $footer_top
+                                - $headerHeight
+                            ;
+                            $needHeight = $this->getHeightOfRowRange($lastDataRow);
 
-                        if ($needHeight>$haveHeight){
+                            if ($needHeight>$haveHeight){
 
-                            $pageModel->finish = $lastDataRow-1-$transfer;
-                            $cutDown = true;
+                                $pageModel->finish = $lastDataRow-1-$transfer;
+                                $cutDown = true;
+
+                            }
 
                         }
-
+                        $result[$page]=$pageModel;
                     }
-                    $result[$page]=$pageModel;
-                }
-                else {
-                    // ѕоследн€€ страница
-                    $pageModel = new PHPExcel_Tools_Document_PageModel($startRow, $finishRow-$transfer);
-                    if (
-                        $lastDataRow>$pageModel->getStart() &&
-                        ($lastDataRow<=$pageModel->getFinish() || $lastDataRow==($pageModel->getFinish()+1)) &&
-                        !$cutDown
-                    )
-                    {
-                        $headerHeight = ($page>1)?$this->getHeaderRowHeight():0;
-                        $haveHeight = $this->getPageHeight()
-                            - $this->getHeightOfRowRange($pageModel->getStart(), $lastDataRow)
-                            - $footer_top
-                            - $headerHeight
-                        ;
-                        $needHeight = $this->getHeightOfRowRange($lastDataRow);
+                    else {
+                        // ѕоследн€€ страница
+                        $pageModel = new PHPExcel_Tools_Document_PageModel($startRow, $finishRow-$transfer);
+                        if (
+                            $lastDataRow>$pageModel->getStart() &&
+                            ($lastDataRow<=$pageModel->getFinish() || $lastDataRow==($pageModel->getFinish()+1)) &&
+                            !$cutDown
+                        )
+                        {
+                            $headerHeight = ($page>1)?$this->getHeaderRowHeight():0;
+                            $haveHeight = $this->getPageHeight()
+                                - $this->getHeightOfRowRange($pageModel->getStart(), $lastDataRow)
+                                - $footer_top
+                                - $headerHeight
+                            ;
+                            $needHeight = $this->getHeightOfRowRange($lastDataRow);
 
-                        if ($needHeight>$haveHeight){
-                            //$transfer = $pageModel->finish -($lastDataRow-1);
-                            $pageModel->finish = $lastDataRow-1-$transfer;
-                            $lastPage = new PHPExcel_Tools_Document_PageModel(
-                                $lastDataRow-$transfer, $finishRow
-                            );
-                            $result[$page+1]=$lastPage;
+                            if ($needHeight>$haveHeight){
+                                //$transfer = $pageModel->finish -($lastDataRow-1);
+                                $pageModel->finish = $lastDataRow-1-$transfer;
+                                $lastPage = new PHPExcel_Tools_Document_PageModel(
+                                    $lastDataRow-$transfer, $finishRow
+                                );
+                                $result[$page+1]=$lastPage;
+                            }
+
                         }
+                        $result[$page] = $pageModel;
 
                     }
-                    $result[$page] = $pageModel;
-
                 }
             }
-        }
-        ksort($result);
-        $maxRow = $this->getExcelSheet()->getHighestRow();
-        for($i=1; $i<=count($result); $i++){
-            if ($result[$i]->getFinish()>$maxRow){
-                $result[$i]->finish = $maxRow;
-            }
-            if ($result[$i]->getStart()>$maxRow){
-                unset($result[$i]);
-            }
+            ksort($result);
+            $maxRow = $this->getExcelSheet()->getHighestRow();
+            for($i=1; $i<=count($result); $i++){
+                if ($result[$i]->getFinish()>$maxRow){
+                    $result[$i]->finish = $maxRow;
+                }
+                if ($result[$i]->getStart()>$maxRow){
+                    unset($result[$i]);
+                }
 
+            }
+            $this->smoothedPageMap = $result;
         }
-        return $result;
+
+        return $this->smoothedPageMap;
     }
 
     /**
