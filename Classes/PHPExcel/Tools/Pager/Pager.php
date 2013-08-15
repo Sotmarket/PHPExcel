@@ -246,6 +246,10 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
                 if ($result[$i]->getStart()>$maxRow){
                     unset($result[$i]);
                 }
+                if ($result[$i]->getFinish() <= $result[$i]->getStart() ){
+                    $result[$i]->finish = $result[$i]->start+1;
+                    $result[$i+1]->start = $result[$i]->start+2;
+                }
 
             }
             $this->smoothedPageMap = $result;
