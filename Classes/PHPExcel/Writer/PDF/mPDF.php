@@ -147,6 +147,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
             $this->generateSheetData() .
             $this->generateHTMLFooter();
         //file_put_contents("__debug.html", $html);
+        $this->_phpExcel=null;
         $pdf->WriteHTML(
             $html
 		);
@@ -157,7 +158,6 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		// Close file
 		fclose($fileHandle);
 
-		PHPExcel_Calculation::setArrayReturnType($saveArrayReturnType);
 	}
 
 }
