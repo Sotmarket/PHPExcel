@@ -89,11 +89,11 @@ class PHPExcel_Cell_DefaultValueBinder implements PHPExcel_Cell_IValueBinder
         } elseif (is_bool($pValue)) {
             return PHPExcel_Cell_DataType::TYPE_BOOL;
 
-        } elseif (is_float($pValue) || is_int($pValue)) {
+        } elseif ( FALSE !== in_array(gettype($pValue),array("integer","double") ) ) {
             return PHPExcel_Cell_DataType::TYPE_NUMERIC;
 
-        } elseif (preg_match('/^\-?([0-9]+\\.?[0-9]*|[0-9]*\\.?[0-9]+)$/', $pValue)) {
-            return PHPExcel_Cell_DataType::TYPE_NUMERIC;
+            // } elseif (preg_match('/^\-?([0-9]+\\.?[0-9]*|[0-9]*\\.?[0-9]+)$/', $pValue)) {
+            //     return PHPExcel_Cell_DataType::TYPE_NUMERIC;
 
         } elseif (is_string($pValue) && array_key_exists($pValue, PHPExcel_Cell_DataType::getErrorCodes())) {
             return PHPExcel_Cell_DataType::TYPE_ERROR;
