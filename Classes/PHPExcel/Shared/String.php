@@ -81,14 +81,14 @@ class PHPExcel_Shared_String
 	 *
 	 * @var boolean
 	 */
-	private static $_isMbstringEnabled;
+	public static $_isMbstringEnabled;
 
 	/**
 	 * Is iconv extension avalable?
 	 *
 	 * @var boolean
 	 */
-	private static $_isIconvEnabled;
+	public static $_isIconvEnabled;
 
 	/**
 	 * Build control characters array
@@ -155,7 +155,7 @@ class PHPExcel_Shared_String
 			"\x1B(;"  => '‹', // 139 in CP1252
 			"\x1BNj"  => 'Œ', // 140 in CP1252
 			"\x1B(>"  => 'Ž', // 142 in CP1252
-			"\x1B)1"  => '‘', // 145 in CP1252
+			"\x1B)1"  => '�?', // 145 in CP1252
 			"\x1B)2"  => '’', // 146 in CP1252
 			"\x1B)3"  => '“', // 147 in CP1252
 			"\x1B)4"  => '”', // 148 in CP1252
@@ -225,7 +225,7 @@ class PHPExcel_Shared_String
 			"\x1BNDO" => 'Õ', // 213 in CP1252
 			"\x1BNHO" => 'Ö', // 214 in CP1252
 			"\x1B-7"  => '×', // 215 in CP1252
-			"\x1BNi"  => 'Ø', // 216 in CP1252
+			"\x1BNi"  => '�?', // 216 in CP1252
 			"\x1BNAU" => 'Ù', // 217 in CP1252
 			"\x1BNBU" => 'Ú', // 218 in CP1252
 			"\x1BNCU" => 'Û', // 219 in CP1252
@@ -383,7 +383,7 @@ class PHPExcel_Shared_String
 	public static function SanitizeUTF8($value)
 	{
 		if (self::getIsIconvEnabled()) {
-			$value = @iconv('UTF-8', 'UTF-8', $value);
+			$value = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
 			return $value;
 		}
 

@@ -118,7 +118,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		$pdf = new mpdf(
             '', //mode
             'A4', // page standart
-           $font->getSize(), // font size - inherit from excel
+           0.5, // font size - inherit from excel
            $font->getName(),// default font - inherit from excel,
 
            $printMargins->getLeft()*$inchFactor, // milimetres
@@ -146,7 +146,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
         $html = $this->generateHTMLHeader(TRUE) .
             $this->generateSheetData() .
             $this->generateHTMLFooter();
-        //file_put_contents("__debug.html", $html);
+        file_put_contents("__debug.html", $html);
         $this->_phpExcel=null;
         $pdf->WriteHTML(
             $html

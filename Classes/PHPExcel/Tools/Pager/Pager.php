@@ -158,7 +158,7 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
         if (null == $this->smoothedPageMap){
             $rowBounds = $this->getRowBounds();
             if (null  == $this->getLastDataRow()){
-                $result = array(1=>new PageModel(1, $rowBounds[1]));
+                $result = array(1=>new PHPExcel_Tools_Document_PageModel(1, $rowBounds[1]));
                 return $result;
             }
 
@@ -239,19 +239,28 @@ class PHPExcel_Tools_Pager_Pager implements IExcelPager{
             }
             ksort($result);
             $maxRow = $this->getExcelSheet()->getHighestRow();
+           // print_r($result); die();
             for($i=1; $i<=count($result); $i++){
                 if ($result[$i]->getFinish()>$maxRow){
                     $result[$i]->finish = $maxRow;
                 }
-                if ($result[$i]->getStart()>$maxRow){
-                    unset($result[$i]);
-                }
+
                 if ($result[$i]->getFinish() <= $result[$i]->getStart() ){
-                    $result[$i]->finish = $result[$i]->start+1;
-                    $result[$i+1]->start = $result[$i]->start+2;
+                    if (isset($result[$i+1])){
+                        $result[$i]->finish = $result[$i]->start+1;
+                        $result[$i+1]->start = $result[$i]->start+2;
+                    }
+                    else {
+                        unset($result[$i]);
+                    }
+
+                }
+                if (isset($result[$i]) && $result[$i]->getStart()>$maxRow){
+                    unset($result[$i]);
                 }
 
             }
+
             $this->smoothedPageMap = $result;
         }
 

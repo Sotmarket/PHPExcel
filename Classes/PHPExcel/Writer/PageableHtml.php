@@ -51,16 +51,16 @@ class PHPExcel_Writer_PageableHtml extends PHPExcel_Writer_PDFHtml implements PH
         if ($generateSurroundingHTML) {
             // html { }
             $css['html']['font-family']	  = 'Calibri, Arial, Helvetica, sans-serif';
-            $css['html']['font-size']		= '11pt';
+            $css['html']['font-size']		= '0pt';
             $css['html']['background-color'] = 'white';
         }
 
 
         // table { }
         $css['table']['border-collapse']  = 'collapse';
-        if (!$this->_isPdf) {
-            $css['table']['page-break-after'] = 'always';
-        }
+        //if (!$this->_isPdf) {
+        //    $css['table']['page-break-after'] = 'always';
+        //}
 
         // .gridlines td { }
         $css['.gridlines td']['border'] = '1px dotted black';
@@ -136,7 +136,7 @@ class PHPExcel_Writer_PageableHtml extends PHPExcel_Writer_PDFHtml implements PH
             $css['table.sheet' . $sheetIndex . ' tr'] = array();
 
             if ($rowDimension->getRowHeight() == -1) {
-                $pt_height = PHPExcel_Shared_Font::getDefaultRowHeightByFont($this->_phpExcel->getDefaultStyle()->getFont());
+                $pt_height = PHPExcel_Shared_Font::getDefaultRowHeightByFont($this->_defaultFont);
             } else {
                 $pt_height = $rowDimension->getRowHeight();
             }
@@ -197,7 +197,8 @@ class PHPExcel_Writer_PageableHtml extends PHPExcel_Writer_PDFHtml implements PH
             else {
                 // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)).'pt "';
                 if (null !=$this->getTableWidth()){
-                    $style = 'style="width:'.$this->getTableWidth().'"';
+                    $width = $this->getTableWidth();
+                    $style = 'style="overflow: wrap;table-layout: fixed;width:'.$width.'"';
                 }
 
             }
