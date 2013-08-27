@@ -118,7 +118,7 @@ class PHPExcel_Writer_PDF_mPDF extends PHPExcel_Writer_PDF_Core implements PHPEx
 		$pdf = new mpdf(
             '', //mode
             'A4', // page standart
-           0.5, // font size - inherit from excel
+           $this->getDefaultFontSize(), // font size - inherit from excel
            $font->getName(),// default font - inherit from excel,
 
            $printMargins->getLeft()*$inchFactor, // milimetres

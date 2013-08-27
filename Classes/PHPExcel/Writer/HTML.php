@@ -132,12 +132,13 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 	 */
 	protected $_generateSheetNavigationBlock = true;
     /**
-     * Форсированно установить ширину таблицы
+     * table width
      * @var string
      */
     protected $tableWidth = null;
+    protected $defaultFontSize=null;
     /**
-     * Установить ширину колонок принудительно
+     * set table width
      * @param $tableWidth
      * @return $this
      */
@@ -151,6 +152,30 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
     {
         return $this->tableWidth;
     }
+
+    public function setDefaultFontSize($defaultFontSize)
+    {
+        $this->defaultFontSize = $defaultFontSize;
+        return $this;
+    }
+
+    protected function getDefaultFontSize()
+    {
+        if (null == $this->defaultFontSize){
+            if (is_null($this->getSheetIndex())) {
+                $sheetIndex = 0;
+
+            } else {
+                $sheetIndex = $this->getSheetIndex();
+
+            }
+            $sheet = $this->_phpExcel->getSheet($sheetIndex);
+            $font = $sheet->getDefaultStyle()->getFont();
+            $this->defaultFontSize = $font->getSize();
+        }
+        return $this->defaultFontSize;
+    }
+
 	/**
 	 * Create a new PHPExcel_Writer_HTML
 	 *
