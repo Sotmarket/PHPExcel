@@ -125,6 +125,11 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
 	 * @var PHPExcel_Worksheet_Drawing_Shadow
 	 */
 	protected $_shadow;
+    /**
+     * relative/absolute position
+     * @var bool
+     */
+    protected $absolutePosition = true;
 
     /**
      * Create a new PHPExcel_Worksheet_BaseDrawing
@@ -147,6 +152,23 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
 		// Set image index
 		self::$_imageCounter++;
 		$this->_imageIndex 			= self::$_imageCounter;
+    }
+
+    /**
+     * @param boolean $absolutePosition
+     */
+    public function setAbsolutePosition($absolutePosition)
+    {
+        $this->absolutePosition = $absolutePosition;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAbsolutePosition()
+    {
+        return $this->absolutePosition;
     }
 
     /**

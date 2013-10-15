@@ -54,6 +54,11 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 	 * @var string
 	 */
 	protected $_imagesRoot	= '.';
+    /**
+     * Root, wich we need to replace for html valid links
+     * @var
+     */
+    protected $_projectRoot;
 
 	/**
 	 * embed images, or link to images
@@ -137,6 +142,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
      */
     protected $tableWidth = null;
     protected $defaultFontSize=null;
+
     /**
      * set table width
      * @param $tableWidth
@@ -153,10 +159,33 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
         return $this->tableWidth;
     }
 
+    /**
+     * Set externally font size
+     * @param $defaultFontSize
+     * @return $this
+     */
     public function setDefaultFontSize($defaultFontSize)
     {
         $this->defaultFontSize = $defaultFontSize;
         return $this;
+    }
+
+    /**
+     * @param string $projectRoot
+     * @return $this
+     */
+    public function setProjectRoot($projectRoot)
+    {
+        $this->_projectRoot = $projectRoot;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getProjectRoot()
+    {
+        return $this->_projectRoot;
     }
 
     protected function getDefaultFontSize()
@@ -584,7 +613,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 		}
 
 		foreach ($pSheet->getDrawingCollection() as $drawing) {
-			if ($drawing instanceof PHPExcel_Worksheet_Drawing) {
+			//if ($drawing instanceof PHPExcel_Worksheet_Drawing) {
 			    $imageTL = PHPExcel_Cell::coordinateFromString($drawing->getCoordinates());
 				$imageCol = PHPExcel_Cell::columnIndexFromString($imageTL[0]);
 				if ($imageTL[1] > $rowMax) {
@@ -593,7 +622,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 						$colMax = $imageTL[0];
 					}
 				}
-			}
+			//}
 		}
 		$html = '';
 		$colMax++;
@@ -636,10 +665,15 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 					if (substr($filename, 0, 1) == '.') {
 						$filename = substr($filename, 1);
 					}
-
 					// Prepend images root
-					$filename = $this->getImagesRoot() . $filename;
-
+                    if (!$this->_isPdf && file_exists($filename) && null !=$this->getProjectRoot()){
+                        //abs path
+                        $filename = str_replace($this->getProjectRoot(), "", $filename);
+                        $filename = $this->getImagesRoot() . $filename;
+                    }
+                    else {
+                        $filename = $this->getImagesRoot() . $filename;
+                    }
 					// Strip off eventual '.'
 					if (substr($filename, 0, 1) == '.' && substr($filename, 0, 2) != './') {
 						$filename = substr($filename, 1);
@@ -665,11 +699,28 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 						}
 					}
 
+                    $position = (true == $drawing->getAbsolutePosition())?"absolute":"relative";
 					$html .= '<div style="position: relative;">';
-					$html .= '<img style="position: absolute; z-index: 1; left: ' . $drawing->getOffsetX() . 'px; top: ' . $drawing->getOffsetY() . 'px; width: ' . $drawing->getWidth() . 'px; height: ' . $drawing->getHeight() . 'px;" src="' . $imageData . '" border="0" />' . PHP_EOL;
+					$html .= '<img style="position: '.$position.'; z-index: 1; left: ' . $drawing->getOffsetX() . 'px; top: ' . $drawing->getOffsetY() . 'px; width: ' . $drawing->getWidth() . 'px; height: ' . $drawing->getHeight() . 'px;" src="' . $imageData . '" border="0" />' . PHP_EOL;
 					$html .= '</div>';
 				}
 			}
+            elseif ($drawing instanceof PHPExcel_Worksheet_MemoryDrawing && $drawing->getCoordinates() == $coordinates){
+                /**
+                 * support for embedded images from xls templates
+                 */
+                $func = $drawing->getRenderingFunction();
+                ob_start();
+                $func($drawing->getImageResource());
+                $image_data = ob_get_contents();
+                ob_end_clean();
+                $position = (true == $drawing->getAbsolutePosition())?"absolute":"relative";
+                $image_data = "data:image/png;base64," . chunk_split(base64_encode($image_data));
+                $html .= '<div style="position: relative;">';
+                $html .= '<img style="position: '.$position.'; z-index: 1; left: ' . $drawing->getOffsetX() . 'px; top: ' . $drawing->getOffsetY() . 'px; width: ' . $drawing->getWidth() . 'px; height: ' . $drawing->getHeight() . 'px;" src="' . $image_data . '" border="0" />' . PHP_EOL;
+                $html .= '</div>';
+
+            }
 		}
 
 		// Return
