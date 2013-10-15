@@ -2575,6 +2575,16 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
         } else {
             $this->_cachedHighestColumn = PHPExcel_Cell::stringFromColumnIndex(--$highestColumn);
         }
+        $iterator = $this->getDrawingCollection()->getIterator();
+        foreach ($iterator as $obj){
+
+            $coords = PHPExcel_Cell::coordinateFromString($obj->getCoordinates());
+            if ($coords[1]>$highestRow){
+                $highestRow = $coords[1];
+            }
+
+        }
+
         $this->_cachedHighestRow = $highestRow;
 
         // Return
