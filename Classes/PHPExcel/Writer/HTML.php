@@ -710,12 +710,23 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
                  * support for embedded images from xls templates
                  */
                 $func = $drawing->getRenderingFunction();
-                ob_start();
-                $func($drawing->getImageResource());
-                $image_data = ob_get_contents();
-                ob_end_clean();
+
+                if ($this->_isPdf){
+                    $tmpname = tempnam(sys_get_temp_dir(), "pdf_images");
+
+                    $func($drawing->getImageResource(), $tmpname);
+                    $image_data = $tmpname;
+                }
+                else {
+                    ob_start();
+                    $func($drawing->getImageResource());
+                    $image_data = ob_get_contents();
+                    ob_end_clean();
+                    $image_data = "data:image/png;base64," . chunk_split(base64_encode($image_data));
+                }
+
                 $position = (true == $drawing->getAbsolutePosition())?"absolute":"relative";
-                $image_data = "data:image/png;base64," . chunk_split(base64_encode($image_data));
+
                 $html .= '<div style="position: relative;">';
                 $html .= '<img style="position: '.$position.'; z-index: 1; left: ' . $drawing->getOffsetX() . 'px; top: ' . $drawing->getOffsetY() . 'px; width: ' . $drawing->getWidth() . 'px; height: ' . $drawing->getHeight() . 'px;" src="' . $image_data . '" border="0" />' . PHP_EOL;
                 $html .= '</div>';

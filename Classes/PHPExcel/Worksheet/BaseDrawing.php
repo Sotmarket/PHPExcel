@@ -129,7 +129,7 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
      * relative/absolute position
      * @var bool
      */
-    protected $absolutePosition = true;
+    protected $absolutePosition = false;
 
     /**
      * Create a new PHPExcel_Worksheet_BaseDrawing
