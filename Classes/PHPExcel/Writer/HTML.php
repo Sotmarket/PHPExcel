@@ -671,9 +671,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
                         $filename = str_replace($this->getProjectRoot(), "", $filename);
                         $filename = $this->getImagesRoot() . $filename;
                     }
-                    else {
-                        $filename = $this->getImagesRoot() . $filename;
-                    }
+                    else 
 					// Strip off eventual '.'
 					if (substr($filename, 0, 1) == '.' && substr($filename, 0, 2) != './') {
 						$filename = substr($filename, 1);
