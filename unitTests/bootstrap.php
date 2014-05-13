@@ -2,7 +2,7 @@
 /**
  * $Id: bootstrap.php 2892 2011-08-14 15:11:50Z markbaker@phpexcel.net $
  *
- * @copyright   Copyright (C) 2011-2012 PHPExcel. All rights reserved.
+ * @copyright   Copyright (C) 2011-2014 PHPExcel. All rights reserved.
  * @package     PHPExcel
  * @subpackage  PHPExcel Unit Tests
  * @author      Mark Baker
@@ -30,6 +30,7 @@ defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'ci');
 set_include_path(implode(PATH_SEPARATOR, array(
 	realpath(APPLICATION_PATH . '/../Classes'),
 	'./',
+	dirname(__FILE__),
 	get_include_path(),
 )));
 
