@@ -1,19 +1,19 @@
 <?php
 /**
  * PHPExcel_Writer_PDFHtml
- * Формирует html для PDF
+ * Р¤РѕСЂРјРёСЂСѓРµС‚ html РґР»СЏ PDF
  * @category   PHPExcel
  * @package	PHPExcel_Writer_HTML
  * @copyright  sabsab
  * @author sabsab
  */
 class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
-	/**
-	 * Is the current writer creating PDF?
-	 *
-	 * @var boolean
-	 */
-	protected $_isPdf = true;
+    /**
+     * Is the current writer creating PDF?
+     *
+     * @var boolean
+     */
+    protected $_isPdf = true;
 
 
     /**
@@ -25,7 +25,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
 
 
     /**
-     * Разделять ли шапку от основной таблицы
+     * Р Р°Р·РґРµР»СЏС‚СЊ Р»Рё С€Р°РїРєСѓ РѕС‚ РѕСЃРЅРѕРІРЅРѕР№ С‚Р°Р±Р»РёС†С‹
      * @param $isSplitTables
      * @return $this
      */
@@ -42,7 +42,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
 
 
     /**
-     * Использовать td.width
+     * РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ td.width
      * @param $isUseCellWidth
      * @return $this
      */
@@ -242,7 +242,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     }
 
     /**
-     * Высота документа в поинтах
+     * Р’С‹СЃРѕС‚Р° РґРѕРєСѓРјРµРЅС‚Р° РІ РїРѕРёРЅС‚Р°С…
      * @param $sheet
      * @return int
      */
@@ -271,7 +271,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
                 $style = 'style="overflow: wrap;width:100% "';
             }
             else {
-               // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)).'pt "';
+                // $style = 'style="width:'.($this->getDocumentWidth($sheetIndex)).'pt "';
                 if (null !=$this->getTableWidth()){
                     $style = 'style="width:'.$this->getTableWidth().'"';
                 }
@@ -309,7 +309,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     }
 
     /**
-     * Построить html для одного ряда
+     * РџРѕСЃС‚СЂРѕРёС‚СЊ html РґР»СЏ РѕРґРЅРѕРіРѕ СЂСЏРґР°
      * @param $sheet
      * @param $row
      * @param $dimension
@@ -325,7 +325,7 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
             while($column++ < $dimension[1][0]) {
                 // Cell exists?
                 if ($sheet->cellExistsByColumnAndRow($column, $row)) {
-                    $rowData[$column] = $sheet->getCellByColumnAndRow($column, $row);
+                    $rowData[$column] = PHPExcel_Cell::stringFromColumnIndex($column) . $row;
                 } else {
                     $rowData[$column] = '';
                 }
@@ -337,68 +337,68 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
     }
 
     /**
-     * Разделитель страниц
+     * Р Р°Р·РґРµР»РёС‚РµР»СЊ СЃС‚СЂР°РЅРёС†
      * @return string
      */
     protected function getPageBreakHtml(){
         return '<div style="page-break-before:always" ></div>';
     }
-	/**
-	 * Generate sheet data
-	 *
-	 * @return	string
-	 * @throws PHPExcel_Writer_Exception
-	 */
-	public function generateSheetData() {
-		// PHPExcel object known?
-		if (is_null($this->_phpExcel)) {
-			throw new PHPExcel_Writer_Exception('Internal PHPExcel object not set to an instance of an object.');
-		}
+    /**
+     * Generate sheet data
+     *
+     * @return	string
+     * @throws PHPExcel_Writer_Exception
+     */
+    public function generateSheetData() {
+        // PHPExcel object known?
+        if (is_null($this->_phpExcel)) {
+            throw new PHPExcel_Writer_Exception('Internal PHPExcel object not set to an instance of an object.');
+        }
 
-		// Ensure that Spans have been calculated?
-		if (!$this->_spansAreCalculated) {
-			$this->_calculateSpans();
-		}
+        // Ensure that Spans have been calculated?
+        if (!$this->_spansAreCalculated) {
+            $this->_calculateSpans();
+        }
 
-		// Fetch sheets
-		$sheets = array();
-		if (is_null($this->_sheetIndex)) {
-			$sheets = $this->_phpExcel->getAllSheets();
-		} else {
-			$sheets[] = $this->_phpExcel->getSheet($this->_sheetIndex);
-		}
+        // Fetch sheets
+        $sheets = array();
+        if (is_null($this->_sheetIndex)) {
+            $sheets = $this->_phpExcel->getAllSheets();
+        } else {
+            $sheets[] = $this->_phpExcel->getSheet($this->_sheetIndex);
+        }
 
-		// Construct HTML
-		$html = '';
+        // Construct HTML
+        $html = '';
 
-		// Loop all sheets
-		$sheetId = 0;
-		foreach ($sheets as $sheet) {
-			// Get worksheet dimension
-			$dimension = explode(':', $sheet->calculateWorksheetDimension());
-			$dimension[0] = PHPExcel_Cell::coordinateFromString($dimension[0]);
-			$dimension[0][0] = PHPExcel_Cell::columnIndexFromString($dimension[0][0]) - 1;
-			$dimension[1] = PHPExcel_Cell::coordinateFromString($dimension[1]);
-			$dimension[1][0] = PHPExcel_Cell::columnIndexFromString($dimension[1][0]) - 1;
+        // Loop all sheets
+        $sheetId = 0;
+        foreach ($sheets as $sheet) {
+            // Get worksheet dimension
+            $dimension = explode(':', $sheet->calculateWorksheetDimension());
+            $dimension[0] = PHPExcel_Cell::coordinateFromString($dimension[0]);
+            $dimension[0][0] = PHPExcel_Cell::columnIndexFromString($dimension[0][0]) - 1;
+            $dimension[1] = PHPExcel_Cell::coordinateFromString($dimension[1]);
+            $dimension[1][0] = PHPExcel_Cell::columnIndexFromString($dimension[1][0]) - 1;
 
-			// row min,max
-			$rowMin = $dimension[0][1];
-			$rowMax = $dimension[1][1];
+            // row min,max
+            $rowMin = $dimension[0][1];
+            $rowMax = $dimension[1][1];
 
-			// calculate start of <tbody>, <thead>
-			$tbodyStart = $rowMin;
-			$theadStart = $theadEnd   = 0; // default: no <thead>	no </thead>
+            // calculate start of <tbody>, <thead>
+            $tbodyStart = $rowMin;
+            $theadStart = $theadEnd   = 0; // default: no <thead>	no </thead>
 
-			if ($sheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
-				$rowsToRepeatAtTop = $sheet->getPageSetup()->getRowsToRepeatAtTop();
+            if ($sheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
+                $rowsToRepeatAtTop = $sheet->getPageSetup()->getRowsToRepeatAtTop();
 
                 $theadStart = $rowsToRepeatAtTop[0];
                 $theadEnd   = $rowsToRepeatAtTop[1];
                 $tbodyStart = $rowsToRepeatAtTop[1] + 1;
 
-			}
-			// Loop through cells
-			$row = $rowMin-1;
+            }
+            // Loop through cells
+            $row = $rowMin-1;
 
             $pager = $this->getPager();
             $pages  =$pager->getSmoothedPageMap();
@@ -452,19 +452,19 @@ class PHPExcel_Writer_PDFHtml extends PHPExcel_Writer_HTML implements PHPExcel_W
                     $html.=$this->getPageBreakHtml();
                 }
             }
-			// Writing PDF?
-			if ($this->_isPdf) {
-				if (is_null($this->_sheetIndex) && $sheetId + 1 < $this->_phpExcel->getSheetCount()) {
-					$html.=$this->getPageBreakHtml();;
-				}
-			}
+            // Writing PDF?
+            if ($this->_isPdf) {
+                if (is_null($this->_sheetIndex) && $sheetId + 1 < $this->_phpExcel->getSheetCount()) {
+                    $html.=$this->getPageBreakHtml();;
+                }
+            }
 
-			// Next sheet
-			++$sheetId;
-		}
+            // Next sheet
+            ++$sheetId;
+        }
 
-		// Return
-		return $html;
-	}
-	
+        // Return
+        return $html;
+    }
+
 }
